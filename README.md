@@ -1,95 +1,98 @@
-# SemanticSure AI — Landing Page
+# SemanticSure AI — Document Originality & Similarity Analysis
 
-A single, polished landing page for SemanticSure AI, an AI-assisted tool
-for checking plagiarism, detecting paraphrasing, and generating
-professional originality reports. This phase covers the marketing site
-only — no auth, pricing, or analysis backend.
+SemanticSure AI is an AI-assisted web application for checking document plagiarism, detecting paraphrasing, highlighting sentence-level similarities, and generating professional originality reports.
 
-## Stack
+## 🚀 Features
 
-- React 18 + TypeScript
-- Vite
-- react-router-dom (for the `/analyze` placeholder route)
-- Plain CSS with design tokens (no UI framework)
+- **Multi-Signal Similarity Detection**: Combines TF-IDF vector cosine similarity, unigram overlap, bigram phrase matching, and trigram structural overlap.
+- **Sentence-Level Manuscript Inspector**: Granular sentence breakdown with classification (Clean, Possible Similarity, High Similarity, and Exact Match) and recommended actions.
+- **Visual Telemetry & Progression Graph**:
+  - Radial Originality Gauge
+  - Sentence Classification Distribution Donut Chart
+  - Multi-Factor Signal Breakdown
+  - Interactive Progression Timeline Chart with filter toggles and click-to-inspect sentence linking
+- **Sample Presets**: One-click demo documents (*Academic AI Study*, *Workplace Strategy*, and *Environmental Review*) for testing different detection scenarios.
+- **Comprehensive Report Generation**:
+  - Download formatted plain text report
+  - Print / Save as PDF
+  - Export machine-readable JSON analysis
 
-## Getting started
+## 🛠️ Tech Stack
 
-```bash
-npm install
-npm run dev
-```
+- **Frontend**: React 18, TypeScript, Vite
+- **Routing**: React Router DOM (v6)
+- **Styling**: Vanilla CSS Design Tokens (Dark Editorial Palette `#0B1220`)
+- **Typography**: Source Serif 4, Inter, IBM Plex Mono
 
-Then open the printed local URL (typically `http://localhost:5173`).
+## 💻 Getting Started
 
-```bash
-npm run build      # type-check + production build to dist/
-npm run preview    # preview the production build locally
-```
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm
 
-## Project structure
+### Installation & Running Locally
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/jeeva477/SemanticSure-AI.git
+   cd SemanticSure-AI
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+5. Preview the production build:
+   ```bash
+   npm run preview
+   ```
+
+## 📁 Project Structure
 
 ```
 src/
   components/
-    Header.tsx
-    Hero.tsx
-    Features.tsx
-    HowItWorks.tsx
-    CTA.tsx
-    Footer.tsx
-    analyze/          # the /analyze tool (fully local, deterministic engine)
-      DocumentInput.tsx
-      LoadingSteps.tsx
-      SummaryCards.tsx
-      ReportCharts.tsx
-      SentenceInspector.tsx
-      ReportActions.tsx
+    Header.tsx              # Navigation bar with cross-route anchors
+    Hero.tsx                # Hero section with manuscript interactive preview
+    Features.tsx            # Feature grid
+    HowItWorks.tsx          # 4-step workflow guide
+    CTA.tsx                 # Call-to-action banner
+    Footer.tsx              # Footer navigation and brand info
+    analyze/
+      DocumentInput.tsx     # File upload dropzone, textarea & demo presets
+      LoadingSteps.tsx      # Step-by-step analysis loading sequence
+      SummaryCards.tsx      # High-level originality and document metrics
+      ReportCharts.tsx      # Radial gauge, donut chart, signal meters & progression timeline
+      SentenceInspector.tsx # Interactive sentence-by-sentence manuscript inspector
+      ReportActions.tsx     # Export actions (Download text, Print/PDF, Export JSON)
   pages/
-    Home.tsx        # composes all sections
-    Analyze.tsx      # input -> loading -> results flow
-  utils/
-    textProcessing.ts # segmentation, tokenization, stopwords, stemmer, synonyms
-    similarity.ts     # TF-IDF/cosine, n-gram overlap, synonym & word-order signals
-    analyzer.ts       # scoring, classification, document-level risks
-    report.ts         # text/JSON/printable-HTML exports
+    Home.tsx                # Marketing landing page
+    Analyze.tsx             # Document analysis application
   data/
-    referenceCorpus.ts
+    referenceCorpus.ts      # Reference corpus documents
   types/
-    analysis.ts
-  App.tsx            # routes
-  main.tsx           # entry, router
-  index.css          # design tokens + shared styles
+    analysis.ts             # TypeScript definitions for analysis data structures
+  utils/
+    analyzer.ts             # Deterministic analysis scoring engine
+    similarity.ts           # TF-IDF, n-gram overlap, and cosine distance math
+    textProcessing.ts       # Sentence splitting, word tokenization & readability metrics
+    report.ts               # Report compilation & export utilities
+  App.tsx                   # Routes & scroll restoration
+  main.tsx                  # React entry point
+  index.css                 # Design tokens and responsive styles
 ```
 
-## Analysis engine
+## 📄 License
 
-- Per-sentence classification: `CLEAN`, `POSSIBLE_SIMILARITY`,
-  `HIGH_SIMILARITY`, `POSSIBLE_PARAPHRASE`, `HIGH_PARAPHRASE`, `EXACT_MATCH`.
-- Lexical signals: TF-IDF cosine, unigram/bigram/trigram overlap.
-- Paraphrase signals: synonym-normalized overlap (built-in dictionary) and
-  word-order retention (LCS over content words), with stopwords excluded so
-  function words can't inflate scores.
-- Everything runs in-browser, deterministically, against the local reference
-  corpus — no network calls, no fabricated scores.
-
-## Design notes
-
-- Dark, editorial theme built around the given palette (`#0B1220`
-  background, `#2563EB` primary blue, green/amber/red as semantic
-  indicators only).
-- Type system: Source Serif 4 for headings and the document preview,
-  Inter for UI copy, IBM Plex Mono for data readouts and the eyebrow
-  labels — a nod to the "report" nature of the product.
-- The hero's signature element is an annotated manuscript preview
-  (inline highlighted spans + a mono stat readout) rather than a
-  generic dashboard gauge, since the product's real interaction is
-  reviewing marked-up text.
-- Motion is intentionally limited to a soft entrance on scroll into
-  view sections, button/card hover states, and smooth-scroll anchor
-  navigation. `prefers-reduced-motion` is respected globally.
-
-## Next phase (not built here)
-
-Backend-scale reference coverage, document formats beyond `.txt`/`.md`
-(Word, PDF), and user accounts/pricing remain future work. The `/analyze`
-route already runs the full local analysis engine described above.
+MIT License.
