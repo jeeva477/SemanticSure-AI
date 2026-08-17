@@ -11,7 +11,33 @@ export type SentenceClassification =
   | "HIGH_PARAPHRASE"
   | "EXACT_MATCH";
 
-/** One entry in the local reference corpus. */
+export type AnalysisMode =
+  | "live_online"
+  | "custom_source"
+  | "internal_check"
+  | "standard_corpus";
+
+export type DetectionFocus =
+  | "balanced" // Balanced multi-signal evaluation
+  | "plagiarism_strict" // Strict verbatim plagiarism & direct copy focus
+  | "paraphrase_deep"; // Deep semantic paraphrase & rewording focus
+
+export interface TuningParameters {
+  focus: DetectionFocus;
+  sensitivity: "low" | "medium" | "high";
+  ignoreQuotes: boolean;
+  semanticWeight: number; // 0.0 to 1.0
+}
+
+export interface AnalysisConfig {
+  mode: AnalysisMode;
+  customSourceText?: string;
+  customSourceName?: string;
+  onlineDocs?: ReferenceDocument[];
+  tuning?: TuningParameters;
+}
+
+/** One entry in the reference corpus (local, custom, or fetched online). */
 export interface ReferenceDocument {
   id: string;
   title: string;
@@ -39,6 +65,7 @@ export interface SimilaritySignals {
   contentWordOverlap: number; // Jaccard over stopword-filtered tokens, 0-1
   synonymOverlap: number; // Jaccard over synonym-normalized content words, 0-1
   wordOrderOverlap: number; // LCS of content words / longer length, 0-1
+  semanticEmbeddingSimilarity: number; // Cosine similarity of open-source vector embeddings, 0-1
   exactMatch: boolean;
 }
 
@@ -57,8 +84,8 @@ export interface SentenceAnalysis {
   index: number;
   text: string;
   classification: SentenceClassification;
-  score: number; // 0-100 combined similarity of the best match (0 if no match)
-  paraphraseScore: number; // 0-100 semantic (synonym + word-order) closeness of the best match
+  score: number; // 0-100 combined lexical similarity of the best match
+  paraphraseScore: number; // 0-100 semantic (synonym + vector embedding + word-order) closeness
   bestMatch: MatchEvidence | null;
   reason: string;
   recommendedAction: string;
@@ -80,12 +107,17 @@ export interface DocumentAnalysis {
   analysisId: string;
   documentName: string;
   analyzedAt: string; // ISO timestamp
+  mode: AnalysisMode;
+  tuning: TuningParameters;
   sentences: SentenceAnalysis[];
   stats: DocumentStats;
   originalityScore: number; // 0-100
+  plagiarismScore: number; // 0-100 direct lexical plagiarism index
+  paraphraseScore: number; // 0-100 semantic paraphrase & rewording index
   similarityRisk: RiskLevel;
   paraphraseRisk: RiskLevel;
   reviewRisk: RiskLevel;
   flaggedCount: number;
   referenceScopeNote: string;
+  activeSourcesCount?: number;
 }

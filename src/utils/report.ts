@@ -5,7 +5,7 @@
 import type { DocumentAnalysis } from "../types/analysis";
 
 export const REPORT_DISCLAIMER =
-  "This report compares the document with the reference material available to this application. Similarity is evidence for review, not proof of plagiarism.";
+  "This report evaluates the document against the active reference material using multi-signal lexical and open-source semantic embedding models. Similarity and paraphrase findings are evidence for review, not proof of plagiarism.";
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -21,15 +21,15 @@ function formatDate(iso: string): string {
 function classificationLabel(c: string): string {
   switch (c) {
     case "EXACT_MATCH":
-      return "Exact Textual Match";
+      return "Exact Verbatim Match";
     case "HIGH_SIMILARITY":
-      return "High Textual Similarity";
+      return "High Verbatim Similarity";
     case "HIGH_PARAPHRASE":
       return "High Paraphrase Likelihood";
     case "POSSIBLE_SIMILARITY":
-      return "Possible Similarity — Requires Review";
+      return "Possible Verbatim Similarity";
     case "POSSIBLE_PARAPHRASE":
-      return "Possible Paraphrase — Requires Review";
+      return "Possible Paraphrase — Semantic Alignment";
     default:
       return "Clean";
   }
@@ -40,6 +40,7 @@ export function exportAnalysisAsJSON(analysis: DocumentAnalysis): string {
   return JSON.stringify(
     {
       product: "SemanticSure AI",
+      engine: "Open-Source Multi-Signal & Dense Vector Embedding Engine",
       disclaimer: REPORT_DISCLAIMER,
       referenceScope: analysis.referenceScopeNote,
       ...analysis,
@@ -52,55 +53,66 @@ export function exportAnalysisAsJSON(analysis: DocumentAnalysis): string {
 /** Build a human-readable plain-text report (for the "Download Report" button). */
 export function buildTextReport(analysis: DocumentAnalysis): string {
   const lines: string[] = [];
-  lines.push("SEMANTICSURE AI — DOCUMENT ANALYSIS REPORT");
-  lines.push("=".repeat(48));
-  lines.push(`Document: ${analysis.documentName}`);
-  lines.push(`Analysis Date: ${formatDate(analysis.analyzedAt)}`);
-  lines.push(`Analysis ID: ${analysis.analysisId}`);
+  lines.push("SEMANTICSURE AI — ORIGINALITY & SIMILARITY AUDIT REPORT");
+  lines.push("=".repeat(60));
+  lines.push(`Document Name:    ${analysis.documentName}`);
+  lines.push(`Analysis Date:    ${formatDate(analysis.analyzedAt)}`);
+  lines.push(`Analysis ID:      ${analysis.analysisId}`);
+  lines.push(`Engine Mode:      ${analysis.mode}`);
+  lines.push(`Detection Focus:  ${analysis.tuning?.focus || "balanced"}`);
+  lines.push(`Sensitivity:      ${(analysis.tuning?.sensitivity || "medium").toUpperCase()}`);
   lines.push("");
-  lines.push("SUMMARY");
-  lines.push("-".repeat(48));
-  lines.push(`Originality: ${analysis.originalityScore}%`);
-  lines.push(`Similarity Risk: ${analysis.similarityRisk.score}% (${analysis.similarityRisk.label})`);
-  lines.push(`Paraphrase Risk: ${analysis.paraphraseRisk.score}% (${analysis.paraphraseRisk.label})`);
-  lines.push(`Review Risk: ${analysis.reviewRisk.score}% (${analysis.reviewRisk.label})`);
-  lines.push(`Sentences Requiring Review: ${analysis.flaggedCount} of ${analysis.stats.sentenceCount}`);
+  lines.push("EXECUTIVE SUMMARY");
+  lines.push("-".repeat(60));
+  lines.push(`Overall Originality Score:      ${analysis.originalityScore}%`);
+  lines.push(`Direct Plagiarism Index:        ${analysis.plagiarismScore}% (${analysis.similarityRisk.label} Risk)`);
+  lines.push(`Semantic Paraphrase Index:      ${analysis.paraphraseScore}% (${analysis.paraphraseRisk.label} Risk)`);
+  lines.push(`Review Risk Level:              ${analysis.reviewRisk.score}% (${analysis.reviewRisk.label} Risk)`);
+  lines.push(`Flagged Sentences:              ${analysis.flaggedCount} of ${analysis.stats.sentenceCount}`);
   lines.push("");
   lines.push("DOCUMENT STATISTICS");
-  lines.push("-".repeat(48));
-  lines.push(`Word Count: ${analysis.stats.wordCount}`);
-  lines.push(`Sentence Count: ${analysis.stats.sentenceCount}`);
-  lines.push(`Reading Time: ${analysis.stats.readingTimeMinutes} min`);
-  lines.push(`Vocabulary Diversity: ${analysis.stats.vocabularyDiversity}%`);
+  lines.push("-".repeat(60));
+  lines.push(`Total Word Count:        ${analysis.stats.wordCount.toLocaleString()} words`);
+  lines.push(`Total Sentence Count:    ${analysis.stats.sentenceCount} sentences`);
+  lines.push(`Estimated Reading Time:  ${analysis.stats.readingTimeMinutes} min`);
+  lines.push(`Vocabulary Diversity:    ${analysis.stats.vocabularyDiversity}%`);
   lines.push("");
-  lines.push("SENTENCE-LEVEL FINDINGS");
-  lines.push("-".repeat(48));
+  lines.push("DETAILED SENTENCE FINDINGS");
+  lines.push("-".repeat(60));
 
   analysis.sentences.forEach((s) => {
     if (s.classification === "CLEAN") return;
     lines.push("");
-    lines.push(`[${s.index + 1}] ${classificationLabel(s.classification)} — similarity ${s.score}%, paraphrase ${s.paraphraseScore}%`);
-    lines.push(`Your text: "${s.text}"`);
+    lines.push(`[Sentence ${s.index + 1}] ${classificationLabel(s.classification)}`);
+    lines.push(`  Similarity: ${s.score}% direct | ${s.paraphraseScore}% semantic`);
+    lines.push(`  Your Text: "${s.text}"`);
     if (s.bestMatch) {
-      lines.push(`Reference: "${s.bestMatch.referenceText}"`);
-      lines.push(`Source: ${s.bestMatch.referenceTitle} — ${s.bestMatch.referenceSource}${s.bestMatch.referenceYear ? `, ${s.bestMatch.referenceYear}` : ""}`);
+      lines.push(`  Matched Source: ${s.bestMatch.referenceTitle} — ${s.bestMatch.referenceSource}`);
+      lines.push(`  Source Text:    "${s.bestMatch.referenceText}"`);
+      lines.push(
+        `  Signals: TF-IDF=${(s.bestMatch.signals.tfidfSimilarity * 100).toFixed(0)}%, Bigram=${(
+          s.bestMatch.signals.bigramOverlap * 100
+        ).toFixed(0)}%, Synonym=${(s.bestMatch.signals.synonymOverlap * 100).toFixed(
+          0
+        )}%, Neural Embedding=${((s.bestMatch.signals.semanticEmbeddingSimilarity || 0) * 100).toFixed(0)}%`
+      );
     }
-    lines.push(`Finding: ${s.reason}`);
-    lines.push(`Recommended Action: ${s.recommendedAction}`);
+    lines.push(`  Finding: ${s.reason}`);
+    lines.push(`  Recommendation: ${s.recommendedAction}`);
   });
 
   if (analysis.flaggedCount === 0) {
     lines.push("");
-    lines.push("No sentences were flagged for review.");
+    lines.push("No sentences were flagged for review. 100% of passages passed clean threshold.");
   }
 
   lines.push("");
   lines.push("REFERENCE SCOPE");
-  lines.push("-".repeat(48));
+  lines.push("-".repeat(60));
   lines.push(analysis.referenceScopeNote);
   lines.push("");
   lines.push("DISCLAIMER");
-  lines.push("-".repeat(48));
+  lines.push("-".repeat(60));
   lines.push(REPORT_DISCLAIMER);
 
   return lines.join("\n");
@@ -128,21 +140,19 @@ export function buildPrintableHTML(analysis: DocumentAnalysis): string {
       <div class="finding">
         <div class="finding-head">
           <span class="badge badge-${s.classification.toLowerCase().replace(/_/g, "-")}">${classificationLabel(s.classification)}</span>
-          <span class="score">${s.score}%</span>
+          <span class="score">${s.score}% direct · ${s.paraphraseScore}% semantic</span>
         </div>
         <p class="label">Your text (sentence ${s.index + 1})</p>
         <p class="quote">${escapeHtml(s.text)}</p>
         ${
           s.bestMatch
-            ? `<p class="label">Reference</p>
+            ? `<p class="label">Reference Match</p>
                <p class="quote">${escapeHtml(s.bestMatch.referenceText)}</p>
-               <p class="source">Source: ${escapeHtml(s.bestMatch.referenceTitle)} — ${escapeHtml(s.bestMatch.referenceSource)}${s.bestMatch.referenceYear ? `, ${s.bestMatch.referenceYear}` : ""}</p>`
+               <p class="source">Source: <strong>${escapeHtml(s.bestMatch.referenceTitle)}</strong> — ${escapeHtml(s.bestMatch.referenceSource)}${s.bestMatch.referenceYear ? `, ${s.bestMatch.referenceYear}` : ""}</p>`
             : ""
         }
-        <p class="label">Finding</p>
-        <p>${escapeHtml(s.reason)}</p>
-        <p class="label">Recommended Action</p>
-        <p>${escapeHtml(s.recommendedAction)}</p>
+        <p class="finding-text"><strong>Finding:</strong> ${escapeHtml(s.reason)}</p>
+        <p class="finding-text"><strong>Recommendation:</strong> ${escapeHtml(s.recommendedAction)}</p>
       </div>`
     )
     .join("\n");
@@ -150,78 +160,51 @@ export function buildPrintableHTML(analysis: DocumentAnalysis): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>SemanticSure AI Report — ${escapeHtml(analysis.documentName)}</title>
-<style>
-  body { font-family: Georgia, 'Times New Roman', serif; color: #111; max-width: 780px; margin: 40px auto; padding: 0 24px; line-height: 1.55; }
-  h1 { font-size: 24px; margin-bottom: 4px; }
-  .meta { color: #555; font-size: 13px; margin-bottom: 24px; }
-  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 24px 0; }
-  .summary div { border: 1px solid #ccc; border-radius: 6px; padding: 10px 12px; }
-  .summary .val { font-size: 20px; font-weight: bold; }
-  .summary .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #666; }
-  h2 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-top: 32px; }
-  .finding { border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin: 14px 0; page-break-inside: avoid; }
-  .finding-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .badge { font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; background: #eee; }
-  .badge-exact-match { background: #fde2e1; color: #a11; }
-  .badge-high-similarity { background: #ffe9c7; color: #a55b00; }
-  .badge-high-paraphrase { background: #f3e8ff; color: #6b21a8; }
-  .badge-possible-similarity { background: #fff4cc; color: #806600; }
-  .badge-possible-paraphrase { background: #ede9fe; color: #5b21b6; }
-  .score { font-weight: bold; }
-  .label { font-size: 11px; text-transform: uppercase; color: #777; margin: 10px 0 2px; }
-  .quote { font-style: italic; margin: 0; }
-  .source { font-size: 12px; color: #555; }
-  .disclaimer { margin-top: 32px; font-size: 12px; color: #555; border-top: 1px solid #ccc; padding-top: 12px; }
-  @media print { body { margin: 0; padding: 24px; } }
-</style>
+  <meta charset="UTF-8">
+  <title>Originality Report — ${escapeHtml(analysis.documentName)}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #111; line-height: 1.5; margin: 40px; }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    .meta { color: #666; font-size: 13px; margin-bottom: 24px; }
+    .metrics { display: flex; gap: 24px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #eee; }
+    .metric-val { font-size: 28px; font-weight: 700; }
+    .metric-label { font-size: 12px; color: #666; text-transform: uppercase; }
+    .finding { margin-bottom: 24px; padding: 16px; border: 1px solid #ddd; border-radius: 6px; page-break-inside: avoid; }
+    .finding-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+    .badge-exact-match, .badge-high-similarity { background: #fee2e2; color: #b91c1c; }
+    .badge-high-paraphrase, .badge-possible-paraphrase { background: #f3e8ff; color: #6b21a8; }
+    .badge-possible-similarity { background: #fef3c7; color: #b45309; }
+    .label { font-size: 11px; font-weight: 700; color: #777; margin: 8px 0 2px; text-transform: uppercase; }
+    .quote { background: #f9f9f9; border-left: 3px solid #ccc; padding: 8px 12px; margin: 4px 0 8px; font-size: 13px; font-style: italic; }
+    .source { font-size: 12px; color: #555; }
+    .finding-text { font-size: 13px; margin: 4px 0; }
+    .disclaimer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; font-size: 11.5px; color: #777; }
+  </style>
 </head>
 <body>
-  <h1>SemanticSure AI — Document Analysis Report</h1>
-  <div class="meta">
-    Document: ${escapeHtml(analysis.documentName)}<br/>
-    Analysis Date: ${escapeHtml(formatDate(analysis.analyzedAt))}<br/>
-    Analysis ID: ${escapeHtml(analysis.analysisId)}
+  <h1>Originality & Similarity Audit Report</h1>
+  <div class="meta">Document: <strong>${escapeHtml(analysis.documentName)}</strong> | Date: ${formatDate(analysis.analyzedAt)} | ID: ${escapeHtml(analysis.analysisId)}</div>
+  
+  <div class="metrics">
+    <div><div class="metric-val" style="color: #16a34a;">${analysis.originalityScore}%</div><div class="metric-label">Originality</div></div>
+    <div><div class="metric-val" style="color: #dc2626;">${analysis.plagiarismScore}%</div><div class="metric-label">Plagiarism Index</div></div>
+    <div><div class="metric-val" style="color: #7c3aed;">${analysis.paraphraseScore}%</div><div class="metric-label">Paraphrase Index</div></div>
+    <div><div class="metric-val">${analysis.flaggedCount} / ${analysis.stats.sentenceCount}</div><div class="metric-label">Sentences Flagged</div></div>
   </div>
 
-  <div class="summary">
-    <div><div class="val">${analysis.originalityScore}%</div><div class="lbl">Originality</div></div>
-    <div><div class="val">${analysis.similarityRisk.score}%</div><div class="lbl">Similarity Risk (${analysis.similarityRisk.label})</div></div>
-    <div><div class="val">${analysis.paraphraseRisk.score}%</div><div class="lbl">Paraphrase Risk (${analysis.paraphraseRisk.label})</div></div>
-    <div><div class="val">${analysis.reviewRisk.score}%</div><div class="lbl">Review Risk (${analysis.reviewRisk.label})</div></div>
-    <div><div class="val">${analysis.flaggedCount}/${analysis.stats.sentenceCount}</div><div class="lbl">Flagged Sentences</div></div>
+  <h2>Findings (${analysis.flaggedCount} flagged)</h2>
+  ${rows.length > 0 ? rows : "<p>No similarity or paraphrase issues were detected in this document.</p>"}
+
+  <div class="disclaimer">
+    <p><strong>Reference Scope:</strong> ${escapeHtml(analysis.referenceScopeNote)}</p>
+    <p>${escapeHtml(REPORT_DISCLAIMER)}</p>
   </div>
-
-  <h2>Document Statistics</h2>
-  <p>
-    Word Count: ${analysis.stats.wordCount} &nbsp;•&nbsp;
-    Sentence Count: ${analysis.stats.sentenceCount} &nbsp;•&nbsp;
-    Reading Time: ${analysis.stats.readingTimeMinutes} min &nbsp;•&nbsp;
-    Vocabulary Diversity: ${analysis.stats.vocabularyDiversity}%
-  </p>
-
-  <h2>Sentence-Level Findings</h2>
-  ${rows || "<p>No sentences were flagged for review.</p>"}
-
-  <h2>Reference Scope</h2>
-  <p>${escapeHtml(analysis.referenceScopeNote)}</p>
-
-  <div class="disclaimer">${escapeHtml(REPORT_DISCLAIMER)}</div>
 </body>
 </html>`;
 }
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-/** Open a new window with the printable report and trigger the print dialog. */
+/** Open print view in new window */
 export function printReport(analysis: DocumentAnalysis) {
   const html = buildPrintableHTML(analysis);
   const win = window.open("", "_blank");
@@ -230,6 +213,14 @@ export function printReport(analysis: DocumentAnalysis) {
   win.document.write(html);
   win.document.close();
   win.focus();
-  // Give the new window a moment to render before invoking print.
-  setTimeout(() => win.print(), 300);
+  setTimeout(() => win.print(), 250);
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

@@ -8,7 +8,8 @@ import ReportCharts from "../components/analyze/ReportCharts";
 import SentenceInspector from "../components/analyze/SentenceInspector";
 import ReportActions from "../components/analyze/ReportActions";
 import { analyzeDocument } from "../utils/analyzer";
-import type { DocumentAnalysis } from "../types/analysis";
+import { extractSearchKeywords, fetchOnlineCrossRefCorpus, fetchOnlineWikipediaCorpus } from "../utils/onlineFetcher";
+import type { AnalysisConfig, DocumentAnalysis, ReferenceDocument } from "../types/analysis";
 
 type Stage = "input" | "loading" | "results";
 
@@ -17,19 +18,38 @@ export default function Analyze() {
   const [analysis, setAnalysis] = useState<DocumentAnalysis | null>(null);
   const [selectedSentenceIndex, setSelectedSentenceIndex] = useState<number | null>(null);
 
-  function handleAnalyze(text: string, documentName: string) {
+  async function handleAnalyze(text: string, documentName: string, config: AnalysisConfig) {
     setStage("loading");
-    // The analysis itself is synchronous and near-instant since it runs
-    // entirely in the browser. A short, real delay lets the loading steps
-    // remain legible rather than flashing by; it does not simulate any
-    // work that isn't actually happening.
-    window.setTimeout(() => {
-      const result = analyzeDocument(text, documentName);
+
+    try {
+      let onlineDocs: ReferenceDocument[] = [];
+
+      if (config.mode === "live_online") {
+        // Extract real keywords from user input text and query live Wikipedia & CrossRef
+        const keywords = extractSearchKeywords(text);
+        const wikiDocs = await fetchOnlineWikipediaCorpus(keywords);
+        const crossRefDocs = keywords.length > 0 ? await fetchOnlineCrossRefCorpus(keywords[0]) : [];
+        onlineDocs = [...wikiDocs, ...crossRefDocs];
+      }
+
+      // Allow a brief delay for UI animation
+      await new Promise((r) => setTimeout(r, 900));
+
+      const result = analyzeDocument(text, documentName, {
+        ...config,
+        onlineDocs,
+      });
+
       setAnalysis(result);
       const firstFlagged = result.sentences.find((s) => s.classification !== "CLEAN");
       setSelectedSentenceIndex(firstFlagged ? firstFlagged.index : 0);
       setStage("results");
-    }, 1600);
+    } catch (err) {
+      console.error("Analysis error:", err);
+      const fallback = analyzeDocument(text, documentName);
+      setAnalysis(fallback);
+      setStage("results");
+    }
   }
 
   function handleReset() {
@@ -58,7 +78,7 @@ export default function Analyze() {
               <p style={styles.subheading}>
                 {stage === "results"
                   ? "Review sentence-level findings, inspect evidence, and export a report."
-                  : "Upload or paste a document to check it against SemanticSure AI's reference material."}
+                  : "Upload or paste any document to check it with open-source models, live web knowledge bases, or custom sources."}
               </p>
             </div>
 
@@ -97,9 +117,8 @@ export default function Analyze() {
                 <div style={styles.card}>
                   <h3 style={styles.sectionTitle}>Export Your Report</h3>
                   <p style={styles.disclaimer}>
-                    This report compares the document with the reference material available to this
-                    application. Similarity and paraphrase findings are evidence for review, not
-                    proof of plagiarism.
+                    This report evaluates the document against the active reference sources using open-source
+                    semantic models and multi-signal metrics. Similarity findings are evidence for review, not proof of plagiarism.
                   </p>
                   <ReportActions analysis={analysis} />
                 </div>
