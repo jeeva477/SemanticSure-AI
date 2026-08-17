@@ -1,0 +1,240 @@
+import type { ReferenceDocument } from "../types/analysis";
+
+// A local reference corpus. This is intentionally NOT a claim of exhaustive
+// or internet-wide coverage — SemanticSure AI compares documents only
+// against the material listed here. The corpus has been expanded to span a
+// broad range of common everyday writing topics (business, health,
+// technology, personal development, science, etc.) so that ordinary
+// documents have a meaningfully better chance of a real, explainable match
+// where genuine overlap exists — while documents about topics not covered
+// here will still, correctly, come back mostly "Clean."
+//
+// IMPORTANT: the sentence below is required to exist verbatim so the
+// exact-match test case in the product spec produces a true EXACT MATCH.
+
+export const REFERENCE_CORPUS: ReferenceDocument[] = [
+  {
+    id: "ref-001",
+    title: "Introduction to Machine Learning Concepts",
+    source: "Reference Corpus — Computer Science Foundations",
+    year: 2021,
+    text: "Machine learning is a branch of artificial intelligence that enables computers to learn patterns from data and make predictions without being explicitly programmed for every task. Instead of following fixed rules, a machine learning system improves its performance as it is exposed to more examples. Common approaches include supervised learning, unsupervised learning, and reinforcement learning.",
+  },
+  {
+    id: "ref-002",
+    title: "Climate Change and Global Temperature Trends",
+    source: "Reference Corpus — Environmental Science Notes",
+    year: 2020,
+    text: "Rising concentrations of greenhouse gases in the atmosphere are the primary driver of long-term global temperature increases. Scientists have observed a clear warming trend over the past century, supported by measurements from ice cores, ocean buoys, and satellite instruments. Reducing carbon emissions is widely regarded as essential to limiting future warming.",
+  },
+  {
+    id: "ref-003",
+    title: "The Shift to Remote Work",
+    source: "Reference Corpus — Workplace Studies Digest",
+    year: 2022,
+    text: "Many organizations adopted remote work arrangements to maintain business continuity during periods of disruption. Employees reported both benefits, such as flexible schedules, and challenges, such as difficulty separating work from home life. Companies have since developed hybrid policies that combine in-office and remote work.",
+  },
+  {
+    id: "ref-004",
+    title: "Fundamentals of Balanced Nutrition",
+    source: "Reference Corpus — Health and Wellness Series",
+    year: 2019,
+    text: "A balanced diet provides the body with the nutrients it needs to function effectively, including carbohydrates, proteins, fats, vitamins, and minerals. Eating a variety of foods helps ensure adequate nutrient intake and supports long-term health. Excessive consumption of processed foods has been linked to a range of chronic conditions.",
+  },
+  {
+    id: "ref-005",
+    title: "Cybersecurity Basics for Small Organizations",
+    source: "Reference Corpus — Information Security Primer",
+    year: 2023,
+    text: "Small organizations are frequently targeted by cyberattacks because they often lack dedicated security staff and formal defenses. Implementing multi-factor authentication and regularly updating software are two of the most effective ways to reduce risk. Employee training remains one of the strongest defenses against phishing attempts.",
+  },
+  {
+    id: "ref-006",
+    title: "How Photosynthesis Powers Plant Growth",
+    source: "Reference Corpus — Life Sciences Overview",
+    year: 2018,
+    text: "Photosynthesis is the process by which plants convert light energy into chemical energy stored in glucose. Chlorophyll in the chloroplasts absorbs sunlight, which drives a series of reactions that combine carbon dioxide and water into sugar and oxygen. This process forms the foundation of most food chains on Earth.",
+  },
+  {
+    id: "ref-007",
+    title: "Principles of Supply and Demand",
+    source: "Reference Corpus — Introductory Economics Notes",
+    year: 2020,
+    text: "The relationship between supply and demand determines the price of goods and services in a market economy. When demand for a product rises while supply remains constant, prices tend to increase. Conversely, an oversupply of a product relative to demand tends to push prices downward.",
+  },
+  {
+    id: "ref-008",
+    title: "The Role of Primary Sources in Historical Research",
+    source: "Reference Corpus — Historiography Handbook",
+    year: 2017,
+    text: "Primary sources, such as letters, official records, and firsthand accounts, provide direct evidence about events from the period in which they were created. Historians cross-reference multiple primary sources to build a more accurate and balanced account of the past. Secondary sources interpret and analyze this primary evidence.",
+  },
+  {
+    id: "ref-009",
+    title: "Why Sleep Matters for Health",
+    source: "Reference Corpus — Health and Wellness Series",
+    year: 2021,
+    text: "Adequate sleep allows the brain to consolidate memories and the body to repair tissue damaged during the day. Chronic sleep deprivation has been associated with impaired concentration, weakened immune function, and a higher risk of cardiovascular disease. Most adults need between seven and nine hours of sleep per night to function well.",
+  },
+  {
+    id: "ref-010",
+    title: "The Benefits of Regular Physical Exercise",
+    source: "Reference Corpus — Health and Wellness Series",
+    year: 2020,
+    text: "Regular physical exercise strengthens the cardiovascular system and helps maintain a healthy body weight. Activities such as walking, cycling, and swimming improve muscle tone and can reduce symptoms of anxiety and depression. Experts generally recommend at least one hundred fifty minutes of moderate exercise each week.",
+  },
+  {
+    id: "ref-011",
+    title: "Building a Personal Budget",
+    source: "Reference Corpus — Personal Finance Basics",
+    year: 2022,
+    text: "A personal budget tracks income against expenses so that spending stays within available resources. Setting aside a portion of income for savings before covering discretionary expenses is a common strategy for building financial security. Reviewing a budget regularly helps identify unnecessary spending and adjust for changing circumstances.",
+  },
+  {
+    id: "ref-012",
+    title: "Time Management Techniques for Productivity",
+    source: "Reference Corpus — Workplace Studies Digest",
+    year: 2021,
+    text: "Breaking large projects into smaller, well-defined tasks makes progress easier to track and reduces the feeling of being overwhelmed. Prioritizing tasks by urgency and importance helps ensure that critical work is completed first. Scheduling short breaks between focused work sessions can improve overall concentration and output.",
+  },
+  {
+    id: "ref-013",
+    title: "Effective Public Speaking",
+    source: "Reference Corpus — Communication Skills Handbook",
+    year: 2019,
+    text: "A clear structure with an introduction, a small number of main points, and a strong conclusion helps an audience follow a spoken presentation. Practicing aloud and anticipating audience questions builds confidence and reduces reliance on notes. Maintaining eye contact and varying vocal tone keeps listeners engaged throughout a talk.",
+  },
+  {
+    id: "ref-014",
+    title: "Qualities of Effective Leadership",
+    source: "Reference Corpus — Management and Leadership Notes",
+    year: 2022,
+    text: "Effective leaders communicate a clear vision and hold themselves accountable for the outcomes of their decisions. Listening to feedback from team members builds trust and often surfaces problems before they escalate. Leaders who delegate appropriately allow their teams to develop new skills and take ownership of their work.",
+  },
+  {
+    id: "ref-015",
+    title: "Core Principles of Marketing",
+    source: "Reference Corpus — Business Fundamentals Series",
+    year: 2021,
+    text: "Successful marketing begins with a clear understanding of the target audience's needs and preferences. A consistent brand message across advertising, packaging, and customer service builds recognition over time. Measuring campaign performance allows a business to refine its approach based on real customer response.",
+  },
+  {
+    id: "ref-016",
+    title: "The Influence of Social Media on Communication",
+    source: "Reference Corpus — Media and Society Notes",
+    year: 2022,
+    text: "Social media platforms have changed how quickly information, and misinformation, can spread among large audiences. Users often curate an idealized version of their lives, which researchers have linked to increased social comparison. Businesses now rely heavily on social platforms to reach customers directly without traditional advertising.",
+  },
+  {
+    id: "ref-017",
+    title: "Ethical Considerations in Artificial Intelligence",
+    source: "Reference Corpus — Computer Science Foundations",
+    year: 2023,
+    text: "AI systems trained on biased data can reproduce and even amplify existing social inequalities in their outputs. Transparency about how a model reaches a decision is increasingly seen as necessary for public trust. Many researchers argue that meaningful human oversight should remain part of high-stakes automated decisions.",
+  },
+  {
+    id: "ref-018",
+    title: "Renewable Energy Sources",
+    source: "Reference Corpus — Environmental Science Notes",
+    year: 2021,
+    text: "Solar and wind power generate electricity without the direct carbon emissions associated with burning fossil fuels. The cost of renewable energy technology has fallen sharply over the past decade, making it increasingly competitive. Energy storage remains a key challenge for relying on sources that are not constantly available.",
+  },
+  {
+    id: "ref-019",
+    title: "Milestones in Space Exploration",
+    source: "Reference Corpus — Physical Sciences Overview",
+    year: 2019,
+    text: "Early space missions focused on demonstrating that humans and equipment could survive beyond Earth's atmosphere. Robotic probes have since explored planets and moons that would be far too costly or dangerous to visit directly. Modern space programs increasingly involve partnerships between government agencies and private companies.",
+  },
+  {
+    id: "ref-020",
+    title: "Understanding Stress and Mental Health",
+    source: "Reference Corpus — Health and Wellness Series",
+    year: 2022,
+    text: "Short bursts of stress can sharpen focus, but prolonged stress takes a measurable toll on both physical and mental health. Common coping strategies include regular exercise, social support, and structured relaxation techniques. Recognizing early symptoms of chronic stress makes it easier to seek help before symptoms worsen.",
+  },
+  {
+    id: "ref-021",
+    title: "Planning a Budget-Friendly Trip",
+    source: "Reference Corpus — Travel and Leisure Notes",
+    year: 2020,
+    text: "Booking flights and accommodations well in advance generally results in significantly lower prices than last-minute arrangements. Traveling during the off-season can reduce both costs and crowds at popular destinations. Local transportation and street food are often more affordable and authentic than tourist-oriented alternatives.",
+  },
+  {
+    id: "ref-022",
+    title: "How Students Learn Differently",
+    source: "Reference Corpus — Education Research Digest",
+    year: 2021,
+    text: "Students absorb and retain information through a range of methods, including visual diagrams, hands-on practice, and verbal explanation. Spacing study sessions over several days tends to improve long-term retention more than cramming before a test. Regular low-stakes quizzes help students identify gaps in their understanding early.",
+  },
+  {
+    id: "ref-023",
+    title: "How Blockchain Technology Works",
+    source: "Reference Corpus — Computer Science Foundations",
+    year: 2022,
+    text: "A blockchain is a distributed ledger that records transactions across many computers so that no single party can alter the history unilaterally. Each new block of transactions is cryptographically linked to the one before it, making tampering easy to detect. Beyond cryptocurrency, the technology has been explored for supply chain tracking and digital identity.",
+  },
+  {
+    id: "ref-024",
+    title: "Challenges of Rapid Urbanization",
+    source: "Reference Corpus — Urban Planning Notes",
+    year: 2020,
+    text: "As cities grow quickly, infrastructure such as housing, transportation, and water systems often struggles to keep pace with demand. Poorly planned urban expansion can worsen traffic congestion and reduce access to green space. Many cities are now investing in public transit and mixed-use development to manage growth more sustainably.",
+  },
+  {
+    id: "ref-025",
+    title: "Why Water Conservation Matters",
+    source: "Reference Corpus — Environmental Science Notes",
+    year: 2019,
+    text: "Freshwater supplies are limited, and growing populations continue to increase demand for agricultural, industrial, and household use. Simple measures such as fixing leaks and using water-efficient fixtures can meaningfully reduce household consumption. Regions experiencing prolonged drought face particularly difficult trade-offs between agriculture and urban water needs.",
+  },
+  {
+    id: "ref-026",
+    title: "What Motivates Employees at Work",
+    source: "Reference Corpus — Management and Leadership Notes",
+    year: 2021,
+    text: "Employees are often motivated by a combination of fair compensation, meaningful work, and recognition from colleagues and managers. Autonomy over how tasks are completed has been shown to increase job satisfaction more than close supervision. Opportunities for growth and skill development help retain employees over the long term.",
+  },
+  {
+    id: "ref-027",
+    title: "Principles of Good Customer Service",
+    source: "Reference Corpus — Business Fundamentals Series",
+    year: 2020,
+    text: "Responding to customer inquiries quickly and clearly builds trust even when the news is not what the customer hoped to hear. Empowering frontline staff to resolve common problems without escalation improves both efficiency and customer satisfaction. Businesses that actively collect and act on customer feedback tend to retain more repeat customers.",
+  },
+  {
+    id: "ref-028",
+    title: "What It Takes to Start a Business",
+    source: "Reference Corpus — Business Fundamentals Series",
+    year: 2022,
+    text: "New businesses typically succeed by solving a specific, well-understood problem for a clearly defined group of customers. Testing a small version of a product before a full launch helps validate demand while limiting financial risk. Access to sufficient early funding is frequently cited as one of the biggest challenges facing new founders.",
+  },
+  {
+    id: "ref-029",
+    title: "Why Data Privacy Matters",
+    source: "Reference Corpus — Information Security Primer",
+    year: 2023,
+    text: "Companies collect large amounts of personal data, often to personalize services or target advertising more precisely. Data breaches can expose sensitive personal information and lead to identity theft or financial fraud. Regulations in many regions now require organizations to disclose how personal data is collected, stored, and used.",
+  },
+  {
+    id: "ref-030",
+    title: "How Vaccines Build Immunity",
+    source: "Reference Corpus — Life Sciences Overview",
+    year: 2021,
+    text: "Vaccines work by exposing the immune system to a harmless piece or weakened form of a pathogen, training it to recognize the real threat. This exposure prompts the body to produce antibodies without causing the disease itself. Widespread vaccination within a population can reduce the spread of contagious disease even among those who are not vaccinated.",
+  },
+  {
+    id: "ref-031",
+    title: "How Globalization Reshaped Trade",
+    source: "Reference Corpus — Introductory Economics Notes",
+    year: 2019,
+    text: "Falling transportation costs and trade agreements have made it far easier for companies to source materials and labor across borders. Globalization has generally lowered prices for consumers while shifting manufacturing jobs toward regions with lower labor costs. Supply chains that span many countries can also become more vulnerable to disruption during a crisis.",
+  },
+  {
+    id: "ref-032",
+    title: "Raising Children Through Different Developmental Stages",
+    source: "Reference Corpus — Family and Child Development Notes",
+    year: 2020,
+    text: "Children develop language, motor, and social skills at different rates, and normal development covers a fairly wide range. Consistent routines and clear, age-appropriate expectations help children feel secure as they grow. Positive reinforcement tends to be more effective than punishment for encouraging long-term behavioral change.",
+  },
+];
