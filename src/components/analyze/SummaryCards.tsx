@@ -93,6 +93,7 @@ export default function SummaryCards({ analysis }: Props) {
         <Stat label="Word count" value={stats.wordCount.toLocaleString()} />
         <Stat label="Sentence count" value={stats.sentenceCount.toLocaleString()} />
         <Stat label="Reading time" value={`${stats.readingTimeMinutes} min`} />
+        <Stat label="Est. revision time" value={`${Math.max(0, analysis.flaggedCount * 2)} min`} />
         <Stat label="Vocabulary diversity" value={`${stats.vocabularyDiversity}%`} />
       </div>
 

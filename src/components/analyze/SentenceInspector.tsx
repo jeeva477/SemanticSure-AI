@@ -209,13 +209,19 @@ function SentenceDetail({ sentence }: { sentence: SentenceAnalysis }) {
         )}
       </div>
 
-      <p style={styles.detailLabel}>Your manuscript text</p>
-      <p style={styles.detailQuote}>{sentence.text}</p>
+      <p style={styles.detailLabel}>Your manuscript text (Matching keywords highlighted)</p>
+      <HighlightedMatchText
+        text={sentence.text}
+        referenceText={sentence.bestMatch ? sentence.bestMatch.referenceText : ""}
+      />
 
       {sentence.bestMatch && (
         <>
           <p style={styles.detailLabel}>Matched reference source</p>
-          <p style={styles.detailQuote}>{sentence.bestMatch.referenceText}</p>
+          <HighlightedMatchText
+            text={sentence.bestMatch.referenceText}
+            referenceText={sentence.text}
+          />
           <p style={styles.sourceLine}>
             Source: <strong>{sentence.bestMatch.referenceTitle}</strong> — {sentence.bestMatch.referenceSource}
             {sentence.bestMatch.referenceYear ? `, ${sentence.bestMatch.referenceYear}` : ""}
@@ -245,6 +251,48 @@ function SentenceDetail({ sentence }: { sentence: SentenceAnalysis }) {
       <p style={styles.detailLabel}>Recommended action</p>
       <p style={styles.detailBody}>{sentence.recommendedAction}</p>
     </div>
+  );
+}
+
+function HighlightedMatchText({ text, referenceText }: { text: string; referenceText: string }) {
+  if (!referenceText) {
+    return <p style={styles.detailQuote}>{text}</p>;
+  }
+
+  const refWords = new Set(
+    referenceText
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, "")
+      .split(/\s+/)
+      .filter((w) => w.length > 2)
+  );
+
+  const tokens = text.split(/(\s+)/);
+
+  return (
+    <p style={styles.detailQuote}>
+      {tokens.map((token, i) => {
+        const clean = token.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const isMatch = clean.length > 2 && refWords.has(clean);
+        return isMatch ? (
+          <mark
+            key={i}
+            style={{
+              background: "rgba(245, 158, 11, 0.25)",
+              color: "var(--amber)",
+              borderRadius: "4px",
+              padding: "1px 4px",
+              fontWeight: 500,
+              fontStyle: "normal",
+            }}
+          >
+            {token}
+          </mark>
+        ) : (
+          <span key={i}>{token}</span>
+        );
+      })}
+    </p>
   );
 }
 
