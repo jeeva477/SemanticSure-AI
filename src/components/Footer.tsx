@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div style={{ maxWidth: 320 }}>
           <Link to="/" style={styles.brand}>
-            SemanticSure <span style={{ color: "var(--text-muted)" }}>AI</span>
+            DeepParaphrase <span style={{ color: "var(--text-muted)" }}>AI</span>
           </Link>
           <p style={styles.tagline}>
             AI-powered plagiarism, paraphrase, and originality analysis.
@@ -27,7 +27,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="container">
-        <p style={styles.copyright}>© 2026 SemanticSure AI</p>
+        <p style={styles.copyright}>© 2026 DeepParaphrase AI</p>
       </div>
     </footer>
   );

@@ -1,6 +1,6 @@
-# SemanticSure AI — Document Originality & Similarity Analysis
+# DeepParaphrase AI — Document Originality & Similarity Analysis
 
-SemanticSure AI is an open-source, AI-assisted web application for checking document plagiarism, detecting complex paraphrasing, identifying sentence-level similarities, and generating professional originality audit reports.
+DeepParaphrase AI is an open-source, AI-assisted web application for checking document plagiarism, detecting complex paraphrasing, identifying sentence-level similarities, and generating professional originality audit reports.
 
 ---
 

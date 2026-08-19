@@ -10,9 +10,9 @@ export default function Header() {
       <div className="container" style={styles.inner}>
         <Link to="/" style={styles.brand}>
           <span style={styles.mark} aria-hidden="true">
-            S
+            D
           </span>
-          SemanticSure <span style={{ color: "var(--text-muted)" }}>AI</span>
+          DeepParaphrase <span style={{ color: "var(--text-muted)" }}>AI</span>
         </Link>
 
         <nav className="nav-links" style={styles.nav} aria-label="Primary">

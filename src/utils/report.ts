@@ -39,7 +39,7 @@ function classificationLabel(c: string): string {
 export function exportAnalysisAsJSON(analysis: DocumentAnalysis): string {
   return JSON.stringify(
     {
-      product: "SemanticSure AI",
+      product: "DeepParaphrase AI",
       engine: "Open-Source Multi-Signal & Dense Vector Embedding Engine",
       disclaimer: REPORT_DISCLAIMER,
       referenceScope: analysis.referenceScopeNote,
@@ -53,7 +53,7 @@ export function exportAnalysisAsJSON(analysis: DocumentAnalysis): string {
 /** Build a human-readable plain-text report (for the "Download Report" button). */
 export function buildTextReport(analysis: DocumentAnalysis): string {
   const lines: string[] = [];
-  lines.push("SEMANTICSURE AI — ORIGINALITY & SIMILARITY AUDIT REPORT");
+  lines.push("DEEPPARAPHRASE AI — ORIGINALITY & SIMILARITY AUDIT REPORT");
   lines.push("=".repeat(60));
   lines.push(`Document Name:    ${analysis.documentName}`);
   lines.push(`Analysis Date:    ${formatDate(analysis.analyzedAt)}`);
